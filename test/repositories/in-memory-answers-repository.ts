@@ -4,8 +4,21 @@ import { Answer } from '@/domain/forum/enterprise/entities/answer';
 export class InMemoryAnswersRepository implements AnswersRepository {
   public items: Answer[] = [];
 
+  async findById(id: string): Promise<Answer | null> {
+    const answer = this.items.find((answer) => answer.id.toString() === id);
+    return answer ?? null;
+  }
+
   async create(answer: Answer): Promise<void> {
     this.items.push(answer);
+    return Promise.resolve();
+  }
+
+  async delete(answer: Answer): Promise<void> {
+    const index = this.items.findIndex(
+      (item) => item.id.toString() === answer.id.toString()
+    );
+    this.items.splice(index, 1);
     return Promise.resolve();
   }
 }
