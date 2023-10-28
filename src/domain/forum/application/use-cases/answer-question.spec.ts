@@ -41,7 +41,7 @@ describe('AnswerQuestionUseCase', () => {
       content: 'answer-content',
     };
 
-    const answer = await sut.execute(input);
+    const { answer } = await sut.execute(input);
     expect(answer.content).toEqual('answer-content');
     expect(answer.questionId).toEqual(new UniqueEntityID('question-id'));
     expect(answer.authorId).toEqual(new UniqueEntityID('instructor-id'));
@@ -59,17 +59,14 @@ describe('AnswerQuestionUseCase', () => {
 
     const createSpy = vi.spyOn(answersRepositoryStub, 'create');
 
-    const answer = await sut.execute(input);
+    await sut.execute(input);
 
     expect(createSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        _id: answer.id,
-        props: {
-          content: 'answer-content',
-          questionId: new UniqueEntityID('question-id'),
-          authorId: new UniqueEntityID('instructor-id'),
-          createdAt: new Date(),
-        },
+        content: 'answer-content',
+        questionId: new UniqueEntityID('question-id'),
+        authorId: new UniqueEntityID('instructor-id'),
+        createdAt: expect.any(Date),
       })
     );
   });

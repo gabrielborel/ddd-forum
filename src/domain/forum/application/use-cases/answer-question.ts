@@ -8,14 +8,16 @@ type AnswerQuestionUseCaseInput = {
   content: string;
 };
 
-type AnswerQuestionUseCaseOutput = Promise<Answer>;
+type AnswerQuestionUseCaseOutput = {
+  answer: Answer;
+};
 
 export class AnswerQuestionUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
   async execute(
     input: AnswerQuestionUseCaseInput
-  ): AnswerQuestionUseCaseOutput {
+  ): Promise<AnswerQuestionUseCaseOutput> {
     const { content, instructorId, questionId } = input;
 
     const answer = Answer.create({
@@ -26,6 +28,6 @@ export class AnswerQuestionUseCase {
 
     await this.answersRepository.create(answer);
 
-    return answer;
+    return { answer };
   }
 }
