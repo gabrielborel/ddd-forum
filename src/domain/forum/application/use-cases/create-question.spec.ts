@@ -1,28 +1,16 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
-import { QuestionsRepository } from '../repositories/questions-repository';
 import { CreateQuestionUseCase } from './create-question';
+import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
 
-const makeQuestionsRepositoryStub = (): QuestionsRepository => {
-  class QuestionsRepositoryStub implements QuestionsRepository {
-    async create(): Promise<void> {}
-  }
-  return new QuestionsRepositoryStub();
-};
+let questionsRepository: InMemoryQuestionsRepository;
+let sut: CreateQuestionUseCase;
 
-type SutType = {
-  sut: CreateQuestionUseCase;
-  questionsRepositoryStub: QuestionsRepository;
-};
-
-const makeSut = (): SutType => {
-  const questionsRepositoryStub = makeQuestionsRepositoryStub();
-  const sut = new CreateQuestionUseCase(questionsRepositoryStub);
-  return { sut, questionsRepositoryStub };
-};
-
-describe('CreateQuestionUseCase', () => {
+describe('Create Question Use Case', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+
+    questionsRepository = new InMemoryQuestionsRepository();
+    sut = new CreateQuestionUseCase(questionsRepository);
   });
 
   afterEach(() => {
@@ -30,8 +18,6 @@ describe('CreateQuestionUseCase', () => {
   });
 
   it('should create a question', async () => {
-    const { sut } = makeSut();
-
     const input = {
       authorId: 'author-id',
       title: 'question-title',
@@ -46,15 +32,13 @@ describe('CreateQuestionUseCase', () => {
   });
 
   it('should call QuestionsRepository.create with correct values', async () => {
-    const { sut, questionsRepositoryStub } = makeSut();
-
     const input = {
       authorId: 'author-id',
       title: 'question-title',
       content: 'question-content',
     };
 
-    const createSpy = vi.spyOn(questionsRepositoryStub, 'create');
+    const createSpy = vi.spyOn(questionsRepository, 'create');
 
     await sut.execute(input);
 

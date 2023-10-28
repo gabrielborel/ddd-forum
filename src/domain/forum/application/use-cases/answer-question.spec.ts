@@ -1,40 +1,23 @@
-import { AnswerQuestionUseCase } from './answer-question';
-import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository';
+import { AnswerQuestionUseCase } from './answer-question';
 
-const makeAnswersRepositoryStub = (): AnswersRepository => {
-  class AnswersRepositoryStub implements AnswersRepository {
-    async create(): Promise<void> {}
-  }
-  return new AnswersRepositoryStub();
-};
+let answersRepository: InMemoryAnswersRepository;
+let sut: AnswerQuestionUseCase;
 
-type SutTypes = {
-  sut: AnswerQuestionUseCase;
-  answersRepositoryStub: AnswersRepository;
-};
-
-const makeSut = (): SutTypes => {
-  const answersRepositoryStub = makeAnswersRepositoryStub();
-  const sut = new AnswerQuestionUseCase(answersRepositoryStub);
-  return {
-    sut,
-    answersRepositoryStub,
-  };
-};
-
-describe('AnswerQuestionUseCase', () => {
+describe('Answer Question Use Case', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+
+    answersRepository = new InMemoryAnswersRepository();
+    sut = new AnswerQuestionUseCase(answersRepository);
   });
 
   afterEach(() => {
     vi.clearAllTimers();
   });
 
-  test('should create an answer', async () => {
-    const { sut } = makeSut();
-
+  it('should create an answer', async () => {
     const input = {
       questionId: 'question-id',
       instructorId: 'instructor-id',
@@ -48,16 +31,14 @@ describe('AnswerQuestionUseCase', () => {
     expect(answer.id).toBeDefined();
   });
 
-  test('should call AnswersRepository.create with correct values', async () => {
-    const { sut, answersRepositoryStub } = makeSut();
-
+  it('should call AnswersRepository.create with correct values', async () => {
     const input = {
       questionId: 'question-id',
       instructorId: 'instructor-id',
       content: 'answer-content',
     };
 
-    const createSpy = vi.spyOn(answersRepositoryStub, 'create');
+    const createSpy = vi.spyOn(answersRepository, 'create');
 
     await sut.execute(input);
 
