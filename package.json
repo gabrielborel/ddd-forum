@@ -1,17 +1,23 @@
 {
   "name": "forum-ddd",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Forum application using DDD",
   "main": "index.js",
   "scripts": {
     "test": "npx vitest run",
-    "test:watch": "npx vitest watch"
+    "test:watch": "npx vitest watch",
+    "lint": "npx eslint src --ext .ts",
+    "lint:fix": "npx eslint src --ext .ts --fix"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gabriel Borel",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "eslint": "^8.52.0",
+    "eslint-plugin-vitest-globals": "^1.4.0",
     "typescript": "^5.2.2",
     "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^0.34.6"

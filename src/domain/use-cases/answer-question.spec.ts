@@ -1,11 +1,10 @@
 import { AnswerQuestionUseCase } from './answer-question';
 import { AnswersRepository } from '@/domain/repositories/answers-repository';
-import { Answer } from '@/domain/entities/answer';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 const makeAnswersRepositoryStub = (): AnswersRepository => {
   class AnswersRepositoryStub implements AnswersRepository {
-    async create(answer: Answer): Promise<void> {}
+    async create(): Promise<void> {}
   }
   return new AnswersRepositoryStub();
 };
