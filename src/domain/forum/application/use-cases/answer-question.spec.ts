@@ -1,5 +1,5 @@
 import { AnswerQuestionUseCase } from './answer-question';
-import { AnswersRepository } from '@/domain/repositories/answers-repository';
+import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 const makeAnswersRepositoryStub = (): AnswersRepository => {
