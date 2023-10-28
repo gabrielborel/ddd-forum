@@ -16,16 +16,15 @@ describe('Edit Question Use Case', () => {
     const createdQuestion = makeQuestion({}, new UniqueEntityID('question-id'));
     await questionsRepository.create(createdQuestion);
 
-    await sut.execute({
+    const { question } = await sut.execute({
       questionId: 'question-id',
       authorId: createdQuestion.authorId.toString(),
       title: 'new title',
       content: 'new content',
     });
 
-    const question = await questionsRepository.findById('question-id');
-    expect(question?.title).toBe('new title');
-    expect(question?.content).toBe('new content');
+    expect(question.title).toBe('new title');
+    expect(question.content).toBe('new content');
   });
 
   it('should throw an error if question does not exist', async () => {
@@ -45,20 +44,14 @@ describe('Edit Question Use Case', () => {
 
     const saveSpy = vi.spyOn(questionsRepository, 'save');
 
-    await sut.execute({
+    const { question: updatedQuestion } = await sut.execute({
       questionId: 'question-id',
       authorId: createdQuestion.authorId.toString(),
       title: 'new title',
       content: 'new content',
     });
 
-    /**
-     * In the test environment, due to the way the InMemoryQuestionsRepository
-     * is implemented, the question is referenced by the items array, so
-     * the question is already updated in the repository.
-     * So thats why we using toHaveBeenCalledWith(createdQuestion)
-     */
-    expect(saveSpy).toHaveBeenCalledWith(createdQuestion);
+    expect(saveSpy).toHaveBeenCalledWith(updatedQuestion);
   });
 
   it('should throw an error if the author is not the author of the question', async () => {

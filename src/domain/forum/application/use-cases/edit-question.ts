@@ -1,3 +1,4 @@
+import { Question } from '../../enterprise/entities/question';
 import { QuestionsRepository } from '../repositories/questions-repository';
 
 type EditQuestionUseCaseInput = {
@@ -7,7 +8,9 @@ type EditQuestionUseCaseInput = {
   content: string;
 };
 
-type EditQuestionUseCaseOutput = void;
+type EditQuestionUseCaseOutput = {
+  question: Question;
+};
 
 export class EditQuestionUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
@@ -28,5 +31,7 @@ export class EditQuestionUseCase {
     question.content = input.content;
 
     await this.questionsRepository.save(question);
+
+    return { question };
   }
 }
