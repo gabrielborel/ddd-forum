@@ -3,6 +3,7 @@ import { InMemoryQuestionCommentsRepository } from 'test/repositories/in-memory-
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
 import { QuestionCommentsRepository } from '../repositories/question-comments-repository';
 import { CommentOnQuestionUseCase } from './comment-on-question';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 let sut: CommentOnQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
@@ -19,25 +20,31 @@ describe('Comment On Question Use Case', () => {
     const createdQuestion = makeQuestion({});
     await questionsRepository.create(createdQuestion);
 
-    const { questionComment } = await sut.execute({
+    const result = await sut.execute({
       questionId: createdQuestion.id.toString(),
       authorId: createdQuestion.authorId.toString(),
       content: 'comment content',
     });
 
-    expect(questionComment.id).toBeDefined();
-    expect(questionComment.questionId).toEqual(createdQuestion.id);
-    expect(questionComment.authorId).toEqual(createdQuestion.authorId);
-    expect(questionComment.content).toEqual('comment content');
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.questionComment.id).toBeDefined();
+      expect(result.value.questionComment.questionId).toEqual(createdQuestion.id);
+      expect(result.value.questionComment.authorId).toEqual(createdQuestion.authorId);
+      expect(result.value.questionComment.content).toEqual('comment content');
+    }
   });
 
   it('should throw an error if question is not found', async () => {
-    await expect(
-      sut.execute({
-        questionId: 'question-id',
-        authorId: 'author-id',
-        content: 'comment content',
-      })
-    ).rejects.toThrowError('Question not found');
+    const result = await sut.execute({
+      questionId: 'question-id',
+      authorId: 'author-id',
+      content: 'comment content',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 });

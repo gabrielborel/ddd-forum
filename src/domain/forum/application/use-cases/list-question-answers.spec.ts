@@ -17,20 +17,24 @@ describe('List Question Answers Use Case', () => {
     await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id-1') }));
     await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id-2') }));
 
-    const { answers } = await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-id-1',
       page: 1,
     });
 
-    expect(answers.length).toBe(2);
-    expect(answers).toEqual([
-      expect.objectContaining({
-        questionId: new UniqueEntityID('question-id-1'),
-      }),
-      expect.objectContaining({
-        questionId: new UniqueEntityID('question-id-1'),
-      }),
-    ]);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.answers.length).toBe(2);
+      expect(result.value.answers).toEqual([
+        expect.objectContaining({
+          questionId: new UniqueEntityID('question-id-1'),
+        }),
+        expect.objectContaining({
+          questionId: new UniqueEntityID('question-id-1'),
+        }),
+      ]);
+    }
   });
 
   it('should list question answers with pagination', async () => {
@@ -38,25 +42,37 @@ describe('List Question Answers Use Case', () => {
       await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id') }));
     }
 
-    const { answers: answersPageOne } = await sut.execute({
+    const firstPageResult = await sut.execute({
       questionId: 'question-id',
       page: 1,
     });
-    expect(answersPageOne.length).toBe(20);
+    expect(firstPageResult.isRight()).toBe(true);
+    expect(firstPageResult.isLeft()).toBe(false);
+    if (firstPageResult.isRight()) {
+      expect(firstPageResult.value.answers.length).toBe(20);
+    }
 
-    const { answers: answersPageTwo } = await sut.execute({
+    const secondPageResult = await sut.execute({
       questionId: 'question-id',
       page: 2,
     });
-    expect(answersPageTwo.length).toBe(3);
+    expect(secondPageResult.isRight()).toBe(true);
+    expect(secondPageResult.isLeft()).toBe(false);
+    if (secondPageResult.isRight()) {
+      expect(secondPageResult.value.answers.length).toBe(3);
+    }
   });
 
   it('should return empty array if no answers are found', async () => {
-    const { answers } = await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-id',
       page: 1,
     });
 
-    expect(answers.length).toBe(0);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.answers.length).toBe(0);
+    }
   });
 });

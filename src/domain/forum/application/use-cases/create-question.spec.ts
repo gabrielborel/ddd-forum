@@ -24,11 +24,16 @@ describe('Create Question Use Case', () => {
       content: 'question-content',
     };
 
-    const { question } = await sut.execute(input);
-    expect(question.title).toEqual('question-title');
-    expect(question.content).toEqual('question-content');
-    expect(question.authorId).toEqual(new UniqueEntityID('author-id'));
-    expect(question.id).toBeDefined();
+    const result = await sut.execute(input);
+
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.question.id).toBeDefined();
+      expect(result.value.question.title).toEqual('question-title');
+      expect(result.value.question.content).toEqual('question-content');
+      expect(result.value.question.authorId).toEqual(new UniqueEntityID('author-id'));
+    }
   });
 
   it('should call QuestionsRepository.create with correct values', async () => {

@@ -17,12 +17,24 @@ describe('List Question Comments Use Case', () => {
     await questionCommentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityID('question-id') }));
     await questionCommentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityID('question-id-2') }));
 
-    const { questionComments } = await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-id',
       page: 1,
     });
 
-    expect(questionComments.length).toBe(2);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.questionComments.length).toBe(2);
+      expect(result.value.questionComments).toEqual([
+        expect.objectContaining({
+          questionId: new UniqueEntityID('question-id'),
+        }),
+        expect.objectContaining({
+          questionId: new UniqueEntityID('question-id'),
+        }),
+      ]);
+    }
   });
 
   it('should return a list of question comments with pagination', async () => {
@@ -30,25 +42,37 @@ describe('List Question Comments Use Case', () => {
       await questionCommentsRepository.create(makeQuestionComment({ questionId: new UniqueEntityID('question-id') }));
     }
 
-    const { questionComments: questionCommentFirstPage } = await sut.execute({
+    const firstPageResult = await sut.execute({
       questionId: 'question-id',
       page: 1,
     });
-    expect(questionCommentFirstPage.length).toBe(20);
+    expect(firstPageResult.isRight()).toBe(true);
+    expect(firstPageResult.isLeft()).toBe(false);
+    if (firstPageResult.isRight()) {
+      expect(firstPageResult.value.questionComments.length).toBe(20);
+    }
 
-    const { questionComments: questionCommentSecondPage } = await sut.execute({
+    const secondPageResult = await sut.execute({
       questionId: 'question-id',
       page: 2,
     });
-    expect(questionCommentSecondPage.length).toBe(3);
+    expect(secondPageResult.isRight()).toBe(true);
+    expect(secondPageResult.isLeft()).toBe(false);
+    if (secondPageResult.isRight()) {
+      expect(secondPageResult.value.questionComments.length).toBe(3);
+    }
   });
 
   it('should return an empty list if no question comments are found', async () => {
-    const { questionComments } = await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-id',
       page: 1,
     });
 
-    expect(questionComments.length).toBe(0);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.questionComments.length).toBe(0);
+    }
   });
 });

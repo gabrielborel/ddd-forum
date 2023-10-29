@@ -2,6 +2,8 @@ import { DeleteAnswerUseCase } from './delete-answer';
 import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { makeAnswer } from 'test/factories/make-answer';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
+import { NotAllowedError } from './errors/not-allowed-error';
 
 let sut: DeleteAnswerUseCase;
 let answersRepository: InMemoryAnswersRepository;
@@ -16,20 +18,22 @@ describe('Delete Answer Use Case', () => {
     const createdAnswer = makeAnswer({}, new UniqueEntityID('answer-id'));
     await answersRepository.create(createdAnswer);
 
-    await sut.execute({
+    const result = await sut.execute({
       answerId: 'answer-id',
       authorId: createdAnswer.authorId.toString(),
     });
 
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
     const answer = await answersRepository.findById('answer-id');
-
     expect(answer).toBeNull();
   });
 
   it('should throw an error if answer does not exist', async () => {
-    await expect(sut.execute({ answerId: 'answer-id', authorId: 'author-id' })).rejects.toThrowError(
-      'Answer not found'
-    );
+    const result = await sut.execute({ answerId: 'answer-id', authorId: 'author-id' });
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 
   it('should call answersRepository.delete with the correct answer', async () => {
@@ -55,8 +59,9 @@ describe('Delete Answer Use Case', () => {
     );
     await answersRepository.create(createdAnswer);
 
-    await expect(sut.execute({ answerId: 'answer-id', authorId: 'other-author-id' })).rejects.toThrowError(
-      'Only the author can delete the answer'
-    );
+    const result = await sut.execute({ answerId: 'answer-id', authorId: 'other-author-id' });
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    expect(result.value).toBeInstanceOf(NotAllowedError);
   });
 });

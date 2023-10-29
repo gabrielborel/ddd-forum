@@ -1,6 +1,7 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Answer } from '@/domain/forum/enterprise/entities/answer';
 import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository';
+import { Either, right } from '@/core/either';
 
 type AnswerQuestionUseCaseInput = {
   questionId: string;
@@ -8,9 +9,12 @@ type AnswerQuestionUseCaseInput = {
   content: string;
 };
 
-type AnswerQuestionUseCaseOutput = {
-  answer: Answer;
-};
+type AnswerQuestionUseCaseOutput = Either<
+  null,
+  {
+    answer: Answer;
+  }
+>;
 
 export class AnswerQuestionUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
@@ -26,6 +30,6 @@ export class AnswerQuestionUseCase {
 
     await this.answersRepository.create(answer);
 
-    return { answer };
+    return right({ answer });
   }
 }

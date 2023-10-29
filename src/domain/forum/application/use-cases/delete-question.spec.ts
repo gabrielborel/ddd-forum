@@ -2,6 +2,8 @@ import { makeQuestion } from 'test/factories/make-question';
 import { DeleteQuestionUseCase } from './delete-question';
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
+import { NotAllowedError } from './errors/not-allowed-error';
 
 let sut: DeleteQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
@@ -16,20 +18,22 @@ describe('Delete Question Use Case', () => {
     const createdQuestion = makeQuestion({}, new UniqueEntityID('question-id'));
     await questionsRepository.create(createdQuestion);
 
-    await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-id',
       authorId: createdQuestion.authorId.toString(),
     });
 
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
     const question = await questionsRepository.findById('question-id');
-
     expect(question).toBeNull();
   });
 
   it('should throw an error if question does not exist', async () => {
-    await expect(sut.execute({ questionId: 'question-id', authorId: 'author-id' })).rejects.toThrowError(
-      'Question not found'
-    );
+    const result = await sut.execute({ questionId: 'question-id', authorId: 'author-id' });
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 
   it('should call questionsRepository.delete with the correct question', async () => {
@@ -55,8 +59,10 @@ describe('Delete Question Use Case', () => {
     );
     await questionsRepository.create(createdQuestion);
 
-    await expect(sut.execute({ questionId: 'question-id', authorId: 'other-author-id' })).rejects.toThrowError(
-      'Only the author can delete the question'
-    );
+    const result = await sut.execute({ questionId: 'question-id', authorId: 'other-author-id' });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(false);
+    expect(result.value).toBeInstanceOf(NotAllowedError);
   });
 });

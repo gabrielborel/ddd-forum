@@ -1,3 +1,4 @@
+import { Either, right } from '@/core/either';
 import { QuestionComment } from '../../enterprise/entities/question-comment';
 import { QuestionCommentsRepository } from '../repositories/question-comments-repository';
 
@@ -6,9 +7,12 @@ type ListQuestionCommentUseCaseInput = {
   page: number;
 };
 
-type ListQuestionCommentUseCaseOutput = {
-  questionComments: QuestionComment[];
-};
+type ListQuestionCommentUseCaseOutput = Either<
+  null,
+  {
+    questionComments: QuestionComment[];
+  }
+>;
 
 export class ListQuestionCommentsUseCase {
   constructor(private questionCommentsRepository: QuestionCommentsRepository) {}
@@ -16,6 +20,6 @@ export class ListQuestionCommentsUseCase {
   async execute(input: ListQuestionCommentUseCaseInput): Promise<ListQuestionCommentUseCaseOutput> {
     const { questionId, page } = input;
     const questionComments = await this.questionCommentsRepository.findManyByQuestionId(questionId, { page });
-    return { questionComments };
+    return right({ questionComments });
   }
 }

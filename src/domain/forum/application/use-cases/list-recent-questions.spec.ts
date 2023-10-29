@@ -16,14 +16,24 @@ describe('List Recent Questions Use Case', () => {
     await questionsRepository.create(makeQuestion({ createdAt: new Date(2023, 0, 20) }));
     await questionsRepository.create(makeQuestion({ createdAt: new Date(2023, 0, 18) }));
 
-    const { questions } = await sut.execute({ page: 1 });
+    const result = await sut.execute({ page: 1 });
 
-    expect(questions.length).toBe(3);
-    expect(questions).toEqual([
-      expect.objectContaining({ createdAt: new Date(2023, 0, 23) }),
-      expect.objectContaining({ createdAt: new Date(2023, 0, 20) }),
-      expect.objectContaining({ createdAt: new Date(2023, 0, 18) }),
-    ]);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.questions.length).toBe(3);
+      expect(result.value.questions).toEqual([
+        expect.objectContaining({
+          createdAt: new Date(2023, 0, 23),
+        }),
+        expect.objectContaining({
+          createdAt: new Date(2023, 0, 20),
+        }),
+        expect.objectContaining({
+          createdAt: new Date(2023, 0, 18),
+        }),
+      ]);
+    }
   });
 
   it('should list recent questions with pagination', async () => {
@@ -31,15 +41,27 @@ describe('List Recent Questions Use Case', () => {
       await questionsRepository.create(makeQuestion());
     }
 
-    const { questions: questionPageOne } = await sut.execute({ page: 1 });
-    expect(questionPageOne.length).toBe(20);
+    const firstPageResult = await sut.execute({ page: 1 });
+    expect(firstPageResult.isRight()).toBe(true);
+    expect(firstPageResult.isLeft()).toBe(false);
+    if (firstPageResult.isRight()) {
+      expect(firstPageResult.value.questions.length).toBe(20);
+    }
 
-    const { questions: questionsPageTwo } = await sut.execute({ page: 2 });
-    expect(questionsPageTwo.length).toBe(3);
+    const secondPageResult = await sut.execute({ page: 2 });
+    expect(secondPageResult.isRight()).toBe(true);
+    expect(secondPageResult.isLeft()).toBe(false);
+    if (secondPageResult.isRight()) {
+      expect(secondPageResult.value.questions.length).toBe(3);
+    }
   });
 
   it('should return an empty array if there are no questions', async () => {
-    const { questions } = await sut.execute({ page: 1 });
-    expect(questions.length).toBe(0);
+    const result = await sut.execute({ page: 1 });
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    if (result.isRight()) {
+      expect(result.value.questions.length).toBe(0);
+    }
   });
 });

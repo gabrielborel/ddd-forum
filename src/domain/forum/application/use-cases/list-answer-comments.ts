@@ -1,3 +1,4 @@
+import { Either, right } from '@/core/either';
 import { AnswerComment } from '../../enterprise/entities/answer-comment';
 import { AnswerCommentsRepository } from '../repositories/answer-comments-repository';
 
@@ -6,9 +7,12 @@ type ListAnswerCommentUseCaseInput = {
   page: number;
 };
 
-type ListAnswerCommentUseCaseOutput = {
-  answerComments: AnswerComment[];
-};
+type ListAnswerCommentUseCaseOutput = Either<
+  null,
+  {
+    answerComments: AnswerComment[];
+  }
+>;
 
 export class ListAnswerCommentsUseCase {
   constructor(private answerCommentsRepository: AnswerCommentsRepository) {}
@@ -16,6 +20,6 @@ export class ListAnswerCommentsUseCase {
   async execute(input: ListAnswerCommentUseCaseInput): Promise<ListAnswerCommentUseCaseOutput> {
     const { answerId, page } = input;
     const answerComments = await this.answerCommentsRepository.findManyByAnswerId(answerId, { page });
-    return { answerComments };
+    return right({ answerComments });
   }
 }

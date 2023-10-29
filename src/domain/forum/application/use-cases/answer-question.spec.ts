@@ -24,11 +24,13 @@ describe('Answer Question Use Case', () => {
       content: 'answer-content',
     };
 
-    const { answer } = await sut.execute(input);
-    expect(answer.content).toEqual('answer-content');
-    expect(answer.questionId).toEqual(new UniqueEntityID('question-id'));
-    expect(answer.authorId).toEqual(new UniqueEntityID('instructor-id'));
-    expect(answer.id).toBeDefined();
+    const result = await sut.execute(input);
+    expect(result.isRight()).toBe(true);
+    expect(result.isLeft()).toBe(false);
+    expect(result.value?.answer.content).toEqual('answer-content');
+    expect(result.value?.answer.questionId).toEqual(new UniqueEntityID('question-id'));
+    expect(result.value?.answer.authorId).toEqual(new UniqueEntityID('instructor-id'));
+    expect(result.value?.answer.id).toBeDefined();
   });
 
   it('should call AnswersRepository.create with correct values', async () => {
