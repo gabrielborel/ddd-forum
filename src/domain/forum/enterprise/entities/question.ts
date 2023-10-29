@@ -2,10 +2,12 @@ import { AggregateRoot } from '@/core/entities/aggregate-root';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Optional } from '@/core/types/optional';
 import { Slug } from './value-objects/slug';
+import { QuestionAttachment } from './question-attachment';
 
 export type QuestionProps = {
   authorId: UniqueEntityID;
   bestAnswerId?: UniqueEntityID;
+  attachments: QuestionAttachment[];
   title: string;
   slug: Slug;
   content: string;
@@ -14,12 +16,13 @@ export type QuestionProps = {
 };
 
 export class Question extends AggregateRoot<QuestionProps> {
-  static create(props: Optional<QuestionProps, 'createdAt' | 'slug'>, id?: UniqueEntityID): Question {
+  static create(props: Optional<QuestionProps, 'createdAt' | 'slug' | 'attachments'>, id?: UniqueEntityID): Question {
     const question = new Question(
       {
         ...props,
         slug: props.slug ?? Slug.createFromText(props.title),
         createdAt: props.createdAt ?? new Date(),
+        attachments: props.attachments ?? [],
       },
       id
     );
@@ -44,6 +47,10 @@ export class Question extends AggregateRoot<QuestionProps> {
 
   get bestAnswerId(): UniqueEntityID | undefined {
     return this.props.bestAnswerId;
+  }
+
+  get attachments(): QuestionAttachment[] {
+    return this.props.attachments;
   }
 
   get createdAt(): Date {
@@ -79,6 +86,10 @@ export class Question extends AggregateRoot<QuestionProps> {
   set bestAnswerId(id: UniqueEntityID) {
     this.props.bestAnswerId = id;
     this.touch();
+  }
+
+  set attachments(attachments: QuestionAttachment[]) {
+    this.props.attachments = attachments;
   }
 
   private touch(): void {

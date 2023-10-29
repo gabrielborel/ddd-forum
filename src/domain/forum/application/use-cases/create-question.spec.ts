@@ -22,6 +22,7 @@ describe('Create Question Use Case', () => {
       authorId: 'author-id',
       title: 'question-title',
       content: 'question-content',
+      attachmentsIds: ['attachment-id-1', 'attachment-id-2'],
     };
 
     const result = await sut.execute(input);
@@ -33,6 +34,11 @@ describe('Create Question Use Case', () => {
       expect(result.value.question.title).toEqual('question-title');
       expect(result.value.question.content).toEqual('question-content');
       expect(result.value.question.authorId).toEqual(new UniqueEntityID('author-id'));
+      expect(result.value.question.attachments).toHaveLength(2);
+      expect(result.value.question.attachments).toEqual([
+        expect.objectContaining({ attachmentId: new UniqueEntityID('attachment-id-1') }),
+        expect.objectContaining({ attachmentId: new UniqueEntityID('attachment-id-2') }),
+      ]);
     }
   });
 
@@ -53,6 +59,8 @@ describe('Create Question Use Case', () => {
         content: 'question-content',
         authorId: new UniqueEntityID('author-id'),
         createdAt: expect.any(Date),
+        slug: expect.anything(),
+        attachments: [],
       })
     );
   });
