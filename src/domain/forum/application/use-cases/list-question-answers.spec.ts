@@ -13,15 +13,9 @@ describe('List Question Answers Use Case', () => {
   });
 
   it('should list question answers', async () => {
-    await answersRepository.create(
-      makeAnswer({ questionId: new UniqueEntityID('question-id-1') })
-    );
-    await answersRepository.create(
-      makeAnswer({ questionId: new UniqueEntityID('question-id-1') })
-    );
-    await answersRepository.create(
-      makeAnswer({ questionId: new UniqueEntityID('question-id-2') })
-    );
+    await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id-1') }));
+    await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id-1') }));
+    await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id-2') }));
 
     const { answers } = await sut.execute({
       questionId: 'question-id-1',
@@ -41,9 +35,7 @@ describe('List Question Answers Use Case', () => {
 
   it('should list question answers with pagination', async () => {
     for (let i = 0; i <= 22; i++) {
-      await answersRepository.create(
-        makeAnswer({ questionId: new UniqueEntityID('question-id') })
-      );
+      await answersRepository.create(makeAnswer({ questionId: new UniqueEntityID('question-id') }));
     }
 
     const { answers: answersPageOne } = await sut.execute({

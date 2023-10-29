@@ -13,13 +13,8 @@ type ListQuestionAnswersUseCaseOutput = {
 export class ListQuestionAnswersUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
-  async execute(
-    input: ListQuestionAnswersUseCaseInput
-  ): Promise<ListQuestionAnswersUseCaseOutput> {
-    const answers = await this.answersRepository.findManyByQuestionId(
-      input.questionId,
-      { page: input.page }
-    );
+  async execute(input: ListQuestionAnswersUseCaseInput): Promise<ListQuestionAnswersUseCaseOutput> {
+    const answers = await this.answersRepository.findManyByQuestionId(input.questionId, { page: input.page });
     return { answers };
   }
 }

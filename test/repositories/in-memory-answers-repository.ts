@@ -10,10 +10,7 @@ export class InMemoryAnswersRepository implements AnswersRepository {
     return answer ?? null;
   }
 
-  async findManyByQuestionId(
-    questionId: string,
-    params: PaginationParams
-  ): Promise<Answer[]> {
+  async findManyByQuestionId(questionId: string, params: PaginationParams): Promise<Answer[]> {
     const answers = this.items
       .filter((answer) => answer.questionId.toString() === questionId)
       .slice((params.page - 1) * 20, params.page * 20);
@@ -26,17 +23,13 @@ export class InMemoryAnswersRepository implements AnswersRepository {
   }
 
   async save(answer: Answer): Promise<void> {
-    const index = this.items.findIndex(
-      (item) => item.id.toString() === answer.id.toString()
-    );
+    const index = this.items.findIndex((item) => item.id.toString() === answer.id.toString());
     this.items[index] = answer;
     return Promise.resolve();
   }
 
   async delete(answer: Answer): Promise<void> {
-    const index = this.items.findIndex(
-      (item) => item.id.toString() === answer.id.toString()
-    );
+    const index = this.items.findIndex((item) => item.id.toString() === answer.id.toString());
     this.items.splice(index, 1);
     return Promise.resolve();
   }

@@ -12,9 +12,7 @@ type GetQuestionBySlugUseCaseOutput = {
 export class GetQuestionBySlugUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
 
-  async execute(
-    input: GetQuestionBySlugUseCaseInput
-  ): Promise<GetQuestionBySlugUseCaseOutput> {
+  async execute(input: GetQuestionBySlugUseCaseInput): Promise<GetQuestionBySlugUseCaseOutput> {
     const question = await this.questionsRepository.findBySlug(input.slug);
 
     if (!question) throw new Error('Question not found');

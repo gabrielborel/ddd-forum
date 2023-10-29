@@ -3,11 +3,11 @@ import { Optional } from '@/core/types/optional';
 import { Comment, CommentProps } from './comment';
 
 export type QuestionCommentProps = CommentProps & {
-  questionId: string;
+  questionId: UniqueEntityID;
 };
 
 export class QuestionComment extends Comment<QuestionCommentProps> {
-  get questionId(): string {
+  get questionId(): UniqueEntityID {
     return this.props.questionId;
   }
 

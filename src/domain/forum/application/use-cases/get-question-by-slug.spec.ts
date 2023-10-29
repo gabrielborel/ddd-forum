@@ -28,9 +28,7 @@ describe('Get Question By Slug Use Case', () => {
   });
 
   it('should throw an error if question is not found', async () => {
-    await expect(sut.execute({ slug: 'question-slug' })).rejects.toThrowError(
-      'Question not found'
-    );
+    await expect(sut.execute({ slug: 'question-slug' })).rejects.toThrowError('Question not found');
   });
 
   it('should call QuestionsRepository.findBySlug with correct values', async () => {

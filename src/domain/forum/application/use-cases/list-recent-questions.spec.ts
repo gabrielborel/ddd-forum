@@ -12,15 +12,9 @@ describe('List Recent Questions Use Case', () => {
   });
 
   it('should list recent questions', async () => {
-    await questionsRepository.create(
-      makeQuestion({ createdAt: new Date(2023, 0, 23) })
-    );
-    await questionsRepository.create(
-      makeQuestion({ createdAt: new Date(2023, 0, 20) })
-    );
-    await questionsRepository.create(
-      makeQuestion({ createdAt: new Date(2023, 0, 18) })
-    );
+    await questionsRepository.create(makeQuestion({ createdAt: new Date(2023, 0, 23) }));
+    await questionsRepository.create(makeQuestion({ createdAt: new Date(2023, 0, 20) }));
+    await questionsRepository.create(makeQuestion({ createdAt: new Date(2023, 0, 18) }));
 
     const { questions } = await sut.execute({ page: 1 });
 

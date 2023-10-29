@@ -17,9 +17,7 @@ export class ChooseQuestionBestAnswerUseCase {
     private readonly questionsRepository: QuestionsRepository
   ) {}
 
-  async execute(
-    input: ChooseQuestionBestAnswerUseCaseInput
-  ): Promise<ChooseQuestionBestAnswerUseCaseOutput> {
+  async execute(input: ChooseQuestionBestAnswerUseCaseInput): Promise<ChooseQuestionBestAnswerUseCaseOutput> {
     const { answerId } = input;
 
     const answer = await this.answersRepository.findById(answerId);
@@ -27,17 +25,13 @@ export class ChooseQuestionBestAnswerUseCase {
       throw new Error('Answer not found');
     }
 
-    const question = await this.questionsRepository.findById(
-      answer.questionId.toString()
-    );
+    const question = await this.questionsRepository.findById(answer.questionId.toString());
     if (!question) {
       throw new Error('Question not found');
     }
 
     if (question.authorId.toString() !== input.authorId) {
-      throw new Error(
-        'Only the author of the question can choose the best answer'
-      );
+      throw new Error('Only the author of the question can choose the best answer');
     }
 
     question.bestAnswerId = answer.id;

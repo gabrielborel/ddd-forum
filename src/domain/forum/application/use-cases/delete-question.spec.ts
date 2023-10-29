@@ -27,9 +27,9 @@ describe('Delete Question Use Case', () => {
   });
 
   it('should throw an error if question does not exist', async () => {
-    await expect(
-      sut.execute({ questionId: 'question-id', authorId: 'author-id' })
-    ).rejects.toThrowError('Question not found');
+    await expect(sut.execute({ questionId: 'question-id', authorId: 'author-id' })).rejects.toThrowError(
+      'Question not found'
+    );
   });
 
   it('should call questionsRepository.delete with the correct question', async () => {
@@ -55,8 +55,8 @@ describe('Delete Question Use Case', () => {
     );
     await questionsRepository.create(createdQuestion);
 
-    await expect(
-      sut.execute({ questionId: 'question-id', authorId: 'other-author-id' })
-    ).rejects.toThrowError('Only the author can delete the question');
+    await expect(sut.execute({ questionId: 'question-id', authorId: 'other-author-id' })).rejects.toThrowError(
+      'Only the author can delete the question'
+    );
   });
 });

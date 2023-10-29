@@ -12,9 +12,7 @@ type ListRecentQuestionsUseCaseOutput = {
 export class ListRecentQuestionsUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
 
-  async execute(
-    input: ListRecentQuestionsUseCaseInput
-  ): Promise<ListRecentQuestionsUseCaseOutput> {
+  async execute(input: ListRecentQuestionsUseCaseInput): Promise<ListRecentQuestionsUseCaseOutput> {
     const { page } = input;
     const questions = await this.questionsRepository.findManyRecent({ page });
     return { questions };

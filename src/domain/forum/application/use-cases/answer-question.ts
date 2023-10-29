@@ -15,9 +15,7 @@ type AnswerQuestionUseCaseOutput = {
 export class AnswerQuestionUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
-  async execute(
-    input: AnswerQuestionUseCaseInput
-  ): Promise<AnswerQuestionUseCaseOutput> {
+  async execute(input: AnswerQuestionUseCaseInput): Promise<AnswerQuestionUseCaseOutput> {
     const { content, instructorId, questionId } = input;
 
     const answer = Answer.create({

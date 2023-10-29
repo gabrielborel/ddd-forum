@@ -12,10 +12,7 @@ describe('Choose Question Best Answer Use Case', () => {
   beforeEach(() => {
     questionsRepository = new InMemoryQuestionsRepository();
     answersRepository = new InMemoryAnswersRepository();
-    sut = new ChooseQuestionBestAnswerUseCase(
-      answersRepository,
-      questionsRepository
-    );
+    sut = new ChooseQuestionBestAnswerUseCase(answersRepository, questionsRepository);
   });
 
   it('should choose the best answer for a question', async () => {
@@ -69,8 +66,6 @@ describe('Choose Question Best Answer Use Case', () => {
       authorId: 'any_author_id',
     });
 
-    await expect(promise).rejects.toThrow(
-      'Only the author of the question can choose the best answer'
-    );
+    await expect(promise).rejects.toThrow('Only the author of the question can choose the best answer');
   });
 });

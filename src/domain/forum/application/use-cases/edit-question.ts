@@ -15,9 +15,7 @@ type EditQuestionUseCaseOutput = {
 export class EditQuestionUseCase {
   constructor(private readonly questionsRepository: QuestionsRepository) {}
 
-  async execute(
-    input: EditQuestionUseCaseInput
-  ): Promise<EditQuestionUseCaseOutput> {
+  async execute(input: EditQuestionUseCaseInput): Promise<EditQuestionUseCaseOutput> {
     const question = await this.questionsRepository.findById(input.questionId);
     if (!question) {
       throw new Error('Question not found');

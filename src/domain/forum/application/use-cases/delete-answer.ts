@@ -10,9 +10,7 @@ type DeleteAnswerUseCaseOutput = void;
 export class DeleteAnswerUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
-  async execute(
-    input: DeleteAnswerUseCaseInput
-  ): Promise<DeleteAnswerUseCaseOutput> {
+  async execute(input: DeleteAnswerUseCaseInput): Promise<DeleteAnswerUseCaseOutput> {
     const answer = await this.answersRepository.findById(input.answerId);
     if (!answer) {
       throw new Error('Answer not found');

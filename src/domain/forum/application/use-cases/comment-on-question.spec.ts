@@ -1,9 +1,8 @@
-import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
-import { CommentOnQuestionUseCase } from './comment-on-question';
-import { QuestionCommentsRepository } from '../repositories/question-comments-repository';
-import { InMemoryQuestionCommentsRepository } from 'test/repositories/in-memory-question-comments.repository';
 import { makeQuestion } from 'test/factories/make-question';
-import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { InMemoryQuestionCommentsRepository } from 'test/repositories/in-memory-question-comments.repository';
+import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
+import { QuestionCommentsRepository } from '../repositories/question-comments-repository';
+import { CommentOnQuestionUseCase } from './comment-on-question';
 
 let sut: CommentOnQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;

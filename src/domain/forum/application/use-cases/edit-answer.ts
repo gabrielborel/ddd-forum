@@ -14,9 +14,7 @@ type EditAnswerUseCaseOutput = {
 export class EditAnswerUseCase {
   constructor(private readonly answersRepository: AnswersRepository) {}
 
-  async execute(
-    input: EditAnswerUseCaseInput
-  ): Promise<EditAnswerUseCaseOutput> {
+  async execute(input: EditAnswerUseCaseInput): Promise<EditAnswerUseCaseOutput> {
     const answer = await this.answersRepository.findById(input.answerId);
     if (!answer) {
       throw new Error('Answer not found');
