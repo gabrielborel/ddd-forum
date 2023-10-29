@@ -15,7 +15,7 @@ export class ListQuestionCommentsUseCase {
 
   async execute(input: ListQuestionCommentUseCaseInput): Promise<ListQuestionCommentUseCaseOutput> {
     const { questionId, page } = input;
-    const questionComments = await this.questionCommentsRepository.findByQuestionId(questionId, { page });
+    const questionComments = await this.questionCommentsRepository.findManyByQuestionId(questionId, { page });
     return { questionComments };
   }
 }

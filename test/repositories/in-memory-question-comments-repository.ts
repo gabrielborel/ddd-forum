@@ -10,7 +10,7 @@ export class InMemoryQuestionCommentsRepository implements QuestionCommentsRepos
     return Promise.resolve(questionComment ?? null);
   }
 
-  async findByQuestionId(questionId: string, params: PaginationParams): Promise<QuestionComment[]> {
+  async findManyByQuestionId(questionId: string, params: PaginationParams): Promise<QuestionComment[]> {
     const questionComments = this.items
       .filter((item) => item.questionId.toString() === questionId)
       .slice((params.page - 1) * 20, params.page * 20);
