@@ -8,9 +8,7 @@ export type CommentProps = {
   updatedAt?: Date;
 };
 
-export abstract class Comment<
-  Props extends CommentProps
-> extends Entity<Props> {
+export abstract class Comment<Props extends CommentProps> extends Entity<Props> {
   get content(): string {
     return this.props.content;
   }

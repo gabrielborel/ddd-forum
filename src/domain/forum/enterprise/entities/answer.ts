@@ -11,10 +11,7 @@ export type AnswerProps = {
 };
 
 export class Answer extends Entity<AnswerProps> {
-  static create(
-    props: Optional<AnswerProps, 'createdAt'>,
-    id?: UniqueEntityID
-  ): Answer {
+  static create(props: Optional<AnswerProps, 'createdAt'>, id?: UniqueEntityID): Answer {
     const answer = new Answer(
       {
         ...props,
