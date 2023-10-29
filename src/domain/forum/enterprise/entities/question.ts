@@ -22,7 +22,7 @@ export class Question extends Entity<QuestionProps> {
       {
         ...props,
         slug: props.slug ?? Slug.createFromText(props.title),
-        createdAt: new Date(),
+        createdAt: props.createdAt ?? new Date(),
       },
       id
     );
@@ -59,6 +59,13 @@ export class Question extends Entity<QuestionProps> {
 
   get excerpt(): string {
     return this.content.substring(0, 120).trimEnd().concat('...');
+  }
+
+  get isNew(): boolean {
+    const now = new Date();
+    const diff = now.getTime() - this.createdAt.getTime();
+    const diffInDays = diff / (1000 * 3600 * 24);
+    return diffInDays <= 3;
   }
 
   set title(title: string) {
