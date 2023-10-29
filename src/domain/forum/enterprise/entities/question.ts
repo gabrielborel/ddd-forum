@@ -1,7 +1,7 @@
-import { Slug } from './value-objects/slug';
-import { Entity } from '@/core/entities/entity';
+import { AggregateRoot } from '@/core/entities/aggregate-root';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Optional } from '@/core/types/optional';
+import { Slug } from './value-objects/slug';
 
 export type QuestionProps = {
   authorId: UniqueEntityID;
@@ -13,7 +13,7 @@ export type QuestionProps = {
   updatedAt?: Date;
 };
 
-export class Question extends Entity<QuestionProps> {
+export class Question extends AggregateRoot<QuestionProps> {
   static create(props: Optional<QuestionProps, 'createdAt' | 'slug'>, id?: UniqueEntityID): Question {
     const question = new Question(
       {
