@@ -1,6 +1,7 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { CreateQuestionUseCase } from './create-question';
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
+import { QuestionAttachmentList } from '../../enterprise/entities/question-attachment-list';
 
 let questionsRepository: InMemoryQuestionsRepository;
 let sut: CreateQuestionUseCase;
@@ -34,8 +35,8 @@ describe('Create Question Use Case', () => {
       expect(result.value.question.title).toEqual('question-title');
       expect(result.value.question.content).toEqual('question-content');
       expect(result.value.question.authorId).toEqual(new UniqueEntityID('author-id'));
-      expect(result.value.question.attachments).toHaveLength(2);
-      expect(result.value.question.attachments).toEqual([
+      expect(result.value.question.attachments.currentItems).toHaveLength(2);
+      expect(result.value.question.attachments.currentItems).toEqual([
         expect.objectContaining({ attachmentId: new UniqueEntityID('attachment-id-1') }),
         expect.objectContaining({ attachmentId: new UniqueEntityID('attachment-id-2') }),
       ]);
@@ -60,7 +61,7 @@ describe('Create Question Use Case', () => {
         authorId: new UniqueEntityID('author-id'),
         createdAt: expect.any(Date),
         slug: expect.anything(),
-        attachments: [],
+        attachments: new QuestionAttachmentList([]),
       })
     );
   });
