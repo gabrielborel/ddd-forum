@@ -4,25 +4,41 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { NotAllowedError } from './errors/not-allowed-error';
+import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { makeQuestionAttachment } from 'test/factories/make-question-attachment';
 
 let sut: EditQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
+let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
 
 describe('Edit Question Use Case', () => {
   beforeEach(() => {
     questionsRepository = new InMemoryQuestionsRepository();
-    sut = new EditQuestionUseCase(questionsRepository);
+    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    sut = new EditQuestionUseCase(questionsRepository, questionAttachmentsRepository);
   });
 
   it('should edit a question', async () => {
     const createdQuestion = makeQuestion({}, new UniqueEntityID('question-id'));
     await questionsRepository.create(createdQuestion);
 
+    questionAttachmentsRepository.items.push(
+      makeQuestionAttachment({
+        questionId: createdQuestion.id,
+        attachmentId: new UniqueEntityID('attachment-1'),
+      }),
+      makeQuestionAttachment({
+        questionId: createdQuestion.id,
+        attachmentId: new UniqueEntityID('attachment-2'),
+      })
+    );
+
     const result = await sut.execute({
       questionId: 'question-id',
       authorId: createdQuestion.authorId.toString(),
       title: 'new title',
       content: 'new content',
+      attachmentsIds: ['attachment-1', 'attachment-3'],
     });
 
     expect(result.isRight()).toBe(true);
@@ -30,6 +46,15 @@ describe('Edit Question Use Case', () => {
     if (result.isRight()) {
       expect(result.value.question.title).toEqual('new title');
       expect(result.value.question.content).toEqual('new content');
+      expect(result.value.question.attachments.currentItems).toHaveLength(2);
+      expect(result.value.question.attachments.currentItems).toEqual([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('attachment-1'),
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('attachment-3'),
+        }),
+      ]);
     }
   });
 
@@ -39,6 +64,7 @@ describe('Edit Question Use Case', () => {
       authorId: 'author-id',
       title: 'new title',
       content: 'new content',
+      attachmentsIds: [],
     });
 
     expect(result.isLeft()).toBe(true);
@@ -57,6 +83,7 @@ describe('Edit Question Use Case', () => {
       authorId: createdQuestion.authorId.toString(),
       title: 'new title',
       content: 'new content',
+      attachmentsIds: [],
     });
 
     expect(result.isLeft()).toBe(false);
@@ -80,6 +107,7 @@ describe('Edit Question Use Case', () => {
       authorId: 'other-author-id',
       title: 'new title',
       content: 'new content',
+      attachmentsIds: [],
     });
 
     expect(result.isLeft()).toBe(true);
