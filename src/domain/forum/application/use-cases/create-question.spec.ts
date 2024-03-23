@@ -2,15 +2,18 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { CreateQuestionUseCase } from './create-question';
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
 import { QuestionAttachmentList } from '../../enterprise/entities/question-attachment-list';
+import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
 
-let questionsRepository: InMemoryQuestionsRepository;
 let sut: CreateQuestionUseCase;
+let questionsRepository: InMemoryQuestionsRepository;
+let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
 
 describe('Create Question Use Case', () => {
   beforeEach(() => {
     vi.useFakeTimers();
 
-    questionsRepository = new InMemoryQuestionsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    questionsRepository = new InMemoryQuestionsRepository(questionAttachmentsRepository);
     sut = new CreateQuestionUseCase(questionsRepository);
   });
 

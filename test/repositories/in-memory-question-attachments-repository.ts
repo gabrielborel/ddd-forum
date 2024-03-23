@@ -6,7 +6,12 @@ export class InMemoryQuestionsAttachmentsRepository implements QuestionAttachmen
 
   async findManyByQuestionId(questionId: string): Promise<QuestionAttachment[]> {
     const questionAttachments = this.items.filter((i) => i.questionId.toString() === questionId);
-
     return questionAttachments;
+  }
+
+  async deleteManyByQuestionId(questionId: string): Promise<void> {
+    const questionAttachments = this.items.filter((i) => i.questionId.toString() !== questionId);
+    this.items = questionAttachments;
+    return Promise.resolve();
   }
 }

@@ -4,19 +4,34 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { NotAllowedError } from './errors/not-allowed-error';
+import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { makeQuestionAttachment } from 'test/factories/make-question-attachment';
 
 let sut: DeleteQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
+let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
 
 describe('Delete Question Use Case', () => {
   beforeEach(() => {
-    questionsRepository = new InMemoryQuestionsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    questionsRepository = new InMemoryQuestionsRepository(questionAttachmentsRepository);
     sut = new DeleteQuestionUseCase(questionsRepository);
   });
 
   it('should delete a question', async () => {
     const createdQuestion = makeQuestion({}, new UniqueEntityID('question-id'));
     await questionsRepository.create(createdQuestion);
+
+    questionAttachmentsRepository.items.push(
+      makeQuestionAttachment({
+        questionId: createdQuestion.id,
+        attachmentId: new UniqueEntityID('attachment-1'),
+      }),
+      makeQuestionAttachment({
+        questionId: createdQuestion.id,
+        attachmentId: new UniqueEntityID('attachment-2'),
+      })
+    );
 
     const result = await sut.execute({
       questionId: 'question-id',
@@ -27,6 +42,7 @@ describe('Delete Question Use Case', () => {
     expect(result.isLeft()).toBe(false);
     const question = await questionsRepository.findById('question-id');
     expect(question).toBeNull();
+    expect(questionAttachmentsRepository.items).toHaveLength(0);
   });
 
   it('should throw an error if question does not exist', async () => {

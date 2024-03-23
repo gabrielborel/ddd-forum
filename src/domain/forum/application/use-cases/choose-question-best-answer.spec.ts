@@ -5,14 +5,17 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { ChooseQuestionBestAnswerUseCase } from './choose-question-best-answer';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { NotAllowedError } from './errors/not-allowed-error';
+import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
 
 let sut: ChooseQuestionBestAnswerUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
 let answersRepository: InMemoryAnswersRepository;
+let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
 
 describe('Choose Question Best Answer Use Case', () => {
   beforeEach(() => {
-    questionsRepository = new InMemoryQuestionsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    questionsRepository = new InMemoryQuestionsRepository(questionAttachmentsRepository);
     answersRepository = new InMemoryAnswersRepository();
     sut = new ChooseQuestionBestAnswerUseCase(answersRepository, questionsRepository);
   });
