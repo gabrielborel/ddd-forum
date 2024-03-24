@@ -2,7 +2,7 @@ import { Entity } from '@/core/entities/entity';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Optional } from '@/core/types/optional';
 
-type NotificationProps = {
+export type NotificationProps = {
   recipientId: UniqueEntityID;
   title: string;
   content: string;
