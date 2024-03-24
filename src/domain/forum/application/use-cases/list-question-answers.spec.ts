@@ -2,13 +2,16 @@ import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-r
 import { ListQuestionAnswersUseCase } from './list-question-answers';
 import { makeAnswer } from 'test/factories/make-answer';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository';
 
 let sut: ListQuestionAnswersUseCase;
 let answersRepository: InMemoryAnswersRepository;
+let answerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 
 describe('List Question Answers Use Case', () => {
   beforeEach(() => {
-    answersRepository = new InMemoryAnswersRepository();
+    answerAttachmentsRepository = new InMemoryAnswerAttachmentsRepository();
+    answersRepository = new InMemoryAnswersRepository(answerAttachmentsRepository);
     sut = new ListQuestionAnswersUseCase(answersRepository);
   });
 

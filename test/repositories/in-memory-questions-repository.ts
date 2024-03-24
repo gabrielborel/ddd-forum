@@ -1,13 +1,13 @@
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository';
 import { Question } from '@/domain/forum/enterprise/entities/question';
-import { InMemoryQuestionsAttachmentsRepository } from './in-memory-question-attachments-repository';
+import { InMemoryQuestionAttachmentsRepository } from './in-memory-question-attachments-repository';
 
 export class InMemoryQuestionsRepository implements QuestionsRepository {
   public items: Question[] = [];
 
   constructor(
-    private readonly inMemoryQuestionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository
+    private readonly inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
   ) {}
 
   async findBySlug(slug: string): Promise<Question | null> {

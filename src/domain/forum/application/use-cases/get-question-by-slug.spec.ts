@@ -3,15 +3,15 @@ import { GetQuestionBySlugUseCase } from './get-question-by-slug';
 import { Slug } from '../../enterprise/entities/value-objects/slug';
 import { makeQuestion } from 'test/factories/make-question';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
-import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
 
 let sut: GetQuestionBySlugUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
-let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
+let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 
 describe('Get Question By Slug Use Case', () => {
   beforeEach(() => {
-    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository();
     questionsRepository = new InMemoryQuestionsRepository(questionAttachmentsRepository);
     sut = new GetQuestionBySlugUseCase(questionsRepository);
   });

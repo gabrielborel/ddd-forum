@@ -4,16 +4,16 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { QuestionCommentsRepository } from '../repositories/question-comments-repository';
 import { CommentOnQuestionUseCase } from './comment-on-question';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
-import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
 
 let sut: CommentOnQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
 let questionCommentsRepository: QuestionCommentsRepository;
-let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
+let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 
 describe('Comment On Question Use Case', () => {
   beforeEach(() => {
-    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository();
     questionsRepository = new InMemoryQuestionsRepository(questionAttachmentsRepository);
     questionCommentsRepository = new InMemoryQuestionCommentsRepository();
     sut = new CommentOnQuestionUseCase(questionsRepository, questionCommentsRepository);

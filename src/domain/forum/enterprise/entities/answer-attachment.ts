@@ -1,9 +1,9 @@
 import { Entity } from '@/core/entities/entity';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
-type AnswerAttachmentProps = {
-  answerId: string;
-  attachmentId: string;
+export type AnswerAttachmentProps = {
+  answerId: UniqueEntityID;
+  attachmentId: UniqueEntityID;
 };
 
 export class AnswerAttachment extends Entity<AnswerAttachmentProps> {
@@ -12,11 +12,11 @@ export class AnswerAttachment extends Entity<AnswerAttachmentProps> {
     return answerAttachment;
   }
 
-  get answerId(): string {
+  get answerId(): UniqueEntityID {
     return this.props.answerId;
   }
 
-  get attachmentId(): string {
+  get attachmentId(): UniqueEntityID {
     return this.props.attachmentId;
   }
 }

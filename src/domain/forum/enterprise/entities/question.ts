@@ -16,7 +16,10 @@ export type QuestionProps = {
 };
 
 export class Question extends AggregateRoot<QuestionProps> {
-  static create(props: Optional<QuestionProps, 'createdAt' | 'slug' | 'attachments'>, id?: UniqueEntityID): Question {
+  static create(
+    props: Optional<QuestionProps, 'createdAt' | 'slug' | 'attachments'>,
+    id?: UniqueEntityID
+  ): Question {
     const question = new Question(
       {
         ...props,
@@ -90,6 +93,7 @@ export class Question extends AggregateRoot<QuestionProps> {
 
   set attachments(attachments: QuestionAttachmentList) {
     this.props.attachments = attachments;
+    this.touch();
   }
 
   private touch(): void {

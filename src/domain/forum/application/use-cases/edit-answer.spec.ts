@@ -4,30 +4,55 @@ import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-r
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { NotAllowedError } from './errors/not-allowed-error';
+import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository';
+import { makeAnswerAttachment } from 'test/factories/make-answer-attachment';
 
 let sut: EditAnswerUseCase;
 let answersRepository: InMemoryAnswersRepository;
+let answerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 
 describe('Edit Answer Use Case', () => {
   beforeEach(() => {
-    answersRepository = new InMemoryAnswersRepository();
-    sut = new EditAnswerUseCase(answersRepository);
+    answerAttachmentsRepository = new InMemoryAnswerAttachmentsRepository();
+    answersRepository = new InMemoryAnswersRepository(answerAttachmentsRepository);
+    sut = new EditAnswerUseCase(answersRepository, answerAttachmentsRepository);
   });
 
   it('should edit a answer', async () => {
     const createdAnswer = makeAnswer({}, new UniqueEntityID('answer-id'));
     await answersRepository.create(createdAnswer);
 
+    answerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: createdAnswer.id,
+        attachmentId: new UniqueEntityID('attachment-1'),
+      }),
+      makeAnswerAttachment({
+        answerId: createdAnswer.id,
+        attachmentId: new UniqueEntityID('attachment-2'),
+      })
+    );
+
     const result = await sut.execute({
       answerId: 'answer-id',
       authorId: createdAnswer.authorId.toString(),
       content: 'new content',
+      attachmentsIds: ['attachment-1', 'attachment-3'],
     });
 
     expect(result.isRight()).toBe(true);
     expect(result.isLeft()).toBe(false);
     if (result.isRight()) {
       expect(result.value.answer.content).toEqual('new content');
+      expect(result.value.answer.attachments.currentItems).toHaveLength(2);
+      expect(result.value.answer.attachments.currentItems).toEqual([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('attachment-1'),
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('attachment-3'),
+        }),
+      ]);
     }
   });
 
@@ -36,6 +61,7 @@ describe('Edit Answer Use Case', () => {
       answerId: 'answer-id',
       authorId: 'author-id',
       content: 'new content',
+      attachmentsIds: [],
     });
 
     expect(result.isLeft()).toBe(true);
@@ -53,6 +79,7 @@ describe('Edit Answer Use Case', () => {
       answerId: 'answer-id',
       authorId: createdAnswer.authorId.toString(),
       content: 'new content',
+      attachmentsIds: [],
     });
 
     expect(result.isLeft()).toBe(false);
@@ -75,6 +102,7 @@ describe('Edit Answer Use Case', () => {
       answerId: 'answer-id',
       authorId: 'other-author-id',
       content: 'new content',
+      attachmentsIds: [],
     });
 
     expect(result.isLeft()).toBe(true);

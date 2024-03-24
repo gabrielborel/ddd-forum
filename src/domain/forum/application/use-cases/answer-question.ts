@@ -2,11 +2,14 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Answer } from '@/domain/forum/enterprise/entities/answer';
 import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository';
 import { Either, right } from '@/core/either';
+import { AnswerAttachment } from '../../enterprise/entities/answer-attachment';
+import { AnswerAttachmentList } from '../../enterprise/entities/answer-attachment-list';
 
 type AnswerQuestionUseCaseInput = {
   questionId: string;
   instructorId: string;
   content: string;
+  attachmentsIds: string[];
 };
 
 type AnswerQuestionUseCaseOutput = Either<
@@ -27,6 +30,14 @@ export class AnswerQuestionUseCase {
       authorId: new UniqueEntityID(instructorId),
       questionId: new UniqueEntityID(questionId),
     });
+
+    const answerAttachments = input.attachmentsIds.map((attachmentId) =>
+      AnswerAttachment.create({
+        attachmentId: new UniqueEntityID(attachmentId),
+        answerId: answer.id,
+      })
+    );
+    answer.attachments = new AnswerAttachmentList(answerAttachments);
 
     await this.answersRepository.create(answer);
 

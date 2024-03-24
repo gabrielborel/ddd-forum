@@ -4,16 +4,16 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { NotAllowedError } from './errors/not-allowed-error';
-import { InMemoryQuestionsAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
 import { makeQuestionAttachment } from 'test/factories/make-question-attachment';
 
 let sut: DeleteQuestionUseCase;
 let questionsRepository: InMemoryQuestionsRepository;
-let questionAttachmentsRepository: InMemoryQuestionsAttachmentsRepository;
+let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 
 describe('Delete Question Use Case', () => {
   beforeEach(() => {
-    questionAttachmentsRepository = new InMemoryQuestionsAttachmentsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository();
     questionsRepository = new InMemoryQuestionsRepository(questionAttachmentsRepository);
     sut = new DeleteQuestionUseCase(questionsRepository);
   });
