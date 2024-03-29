@@ -2,8 +2,8 @@ import { makeAnswer } from 'test/factories/make-answer';
 import { EditAnswerUseCase } from './edit-answer';
 import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
-import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository';
 import { makeAnswerAttachment } from 'test/factories/make-answer-attachment';
 

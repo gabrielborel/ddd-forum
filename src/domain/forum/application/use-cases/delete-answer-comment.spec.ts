@@ -1,8 +1,8 @@
 import { InMemoryAnswerCommentsRepository } from 'test/repositories/in-memory-answer-comments-repository';
 import { DeleteAnswerCommentUseCase } from './delete-answer-comment';
 import { makeAnswerComment } from 'test/factories/make-answer-comment';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
-import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 let sut: DeleteAnswerCommentUseCase;
 let answerCommentsRepository: InMemoryAnswerCommentsRepository;
@@ -24,7 +24,9 @@ describe('Delete Answer Comment Use Case', () => {
 
     expect(result.isRight()).toBe(true);
     expect(result.isLeft()).toBe(false);
-    const deletedAnswerComment = await answerCommentsRepository.findById(answerComment.id.toString());
+    const deletedAnswerComment = await answerCommentsRepository.findById(
+      answerComment.id.toString()
+    );
     expect(deletedAnswerComment).toBeNull();
   });
 

@@ -2,8 +2,8 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { Question } from '../../enterprise/entities/question';
 import { QuestionsRepository } from '../repositories/questions-repository';
 import { Either, left, right } from '@/core/either';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
-import { NotAllowedError } from './errors/not-allowed-error';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 type ChooseQuestionBestAnswerUseCaseInput = {
   authorId: string;
@@ -23,7 +23,9 @@ export class ChooseQuestionBestAnswerUseCase {
     private readonly questionsRepository: QuestionsRepository
   ) {}
 
-  async execute(input: ChooseQuestionBestAnswerUseCaseInput): Promise<ChooseQuestionBestAnswerUseCaseOutput> {
+  async execute(
+    input: ChooseQuestionBestAnswerUseCaseInput
+  ): Promise<ChooseQuestionBestAnswerUseCaseOutput> {
     const { answerId } = input;
 
     const answer = await this.answersRepository.findById(answerId);
