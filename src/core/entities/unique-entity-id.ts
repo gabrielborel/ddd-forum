@@ -3,15 +3,19 @@ import { randomUUID } from 'crypto';
 export class UniqueEntityID {
   private readonly value: string;
 
-  constructor(id?: string) {
+  public constructor(id?: string) {
     this.value = id ?? randomUUID();
   }
 
-  toString(): string {
+  public toString(): string {
     return this.value;
   }
 
-  toValue(): string {
+  public toValue(): string {
     return this.value;
+  }
+
+  public equals(id: UniqueEntityID): boolean {
+    return id.toValue() === this.value;
   }
 }

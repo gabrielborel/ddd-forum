@@ -12,4 +12,8 @@ export abstract class Entity<T> {
   get id(): UniqueEntityID {
     return this._id;
   }
+
+  public equals(entity: Entity<unknown>): boolean {
+    return entity === this || entity.id === this._id;
+  }
 }
