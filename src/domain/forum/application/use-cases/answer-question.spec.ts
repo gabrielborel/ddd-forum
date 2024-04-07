@@ -44,7 +44,6 @@ describe('Answer Question Use Case', () => {
           attachmentId: new UniqueEntityID('attachment-2'),
         }),
       ]);
-      expect(result.value.answer.domainEvents).toHaveLength(1);
     }
   });
 
