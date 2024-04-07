@@ -2,6 +2,7 @@ import { PaginationParams } from '@/core/repositories/pagination-params';
 import { AnswersRepository } from '@/domain/forum/application/repositories/answers-repository';
 import { Answer } from '@/domain/forum/enterprise/entities/answer';
 import { InMemoryAnswerAttachmentsRepository } from './in-memory-answer-attachments-repository';
+import { DomainEvents } from '@/core/events/domain-events';
 
 export class InMemoryAnswersRepository implements AnswersRepository {
   public items: Answer[] = [];
@@ -22,12 +23,14 @@ export class InMemoryAnswersRepository implements AnswersRepository {
 
   async create(answer: Answer): Promise<void> {
     this.items.push(answer);
+    DomainEvents.dispatchEventsForAggregate(answer.id);
     return Promise.resolve();
   }
 
   async save(answer: Answer): Promise<void> {
     const index = this.items.findIndex((item) => item.id.toString() === answer.id.toString());
     this.items[index] = answer;
+    DomainEvents.dispatchEventsForAggregate(answer.id);
     return Promise.resolve();
   }
 
